@@ -8,28 +8,32 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {zodResolver} from '@hookform/resolvers/zod'
-import { createIssueSchema } from '@/app/createIssueSchema'
+import { IssueSchema } from '@/app/createIssueSchema'
 import { z } from 'zod'
 import { Text } from '@radix-ui/themes'
 import ErrorMessage from '@/app/components/ErrorMessage';
 import Spinner from '@/app/components/Spinner';
 import { Issue } from '@prisma/client';
 
-type IssueFormData = z.infer<typeof createIssueSchema>;
+type IssueFormData = z.infer<typeof IssueSchema>;
 
 const IssueForm = ({issue} : {issue?: Issue}) => {
     const [error, setError] = useState('')
     const [submitting, setSubmitting] = useState(false);
     const router = useRouter()
     const { register, control, handleSubmit, formState: { errors } } = useForm<IssueFormData>({
-        resolver: zodResolver(createIssueSchema)
+        resolver: zodResolver(IssueSchema)
     })
 
     const onSubmit = handleSubmit(async (data) => {
         try {
             setSubmitting(true)
-            await axios.post('/api/issues', data)
+            if (issue)
+                await axios.patch(`/api/issues/${issue.id}`, data)
+            else
+                await axios.post('/api/issues', data)
             router.push('/issues')
+            
         } catch (error) {
             setSubmitting(false)
             setError('Something went wrong')
@@ -54,7 +58,7 @@ const IssueForm = ({issue} : {issue?: Issue}) => {
             )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={submitting}>Submit New Issue {submitting && <Spinner />}</Button>
+        <Button disabled={submitting}>{issue ? 'Update Issue' : 'Submit New Issue'} {submitting && <Spinner />}</Button>
     </form></div>
    
   )
