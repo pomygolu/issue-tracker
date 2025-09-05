@@ -1,12 +1,8 @@
-import dynamic from 'next/dynamic'
-import DynamicIssueForm from '../_components/DynamicIssueForm'
-
-
+import dynamic from 'next/dynamic';
+import DynamicIssueForm from '../_components/DynamicIssueForm';
 
 const NewIssuePage = () => {
-  return (
-    <DynamicIssueForm />
-  )
-}
+  return <DynamicIssueForm />;
+};
 
-export default NewIssuePage
+export default NewIssuePage;

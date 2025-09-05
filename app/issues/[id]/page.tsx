@@ -1,44 +1,46 @@
-import prisma from '@/prisma/client'
-import { notFound } from 'next/navigation'
-import React from 'react'
-import { Box, Flex, Grid } from '@radix-ui/themes'
-import EditButton from './EditButton'
-import IssueDetails from './IssueDetails'
-import IssueDeleteButton from './IssueDeleteButton'
-import { getServerSession } from 'next-auth'
-import authOptions from '@/app/auth/authOptions'
-import AssigneeSelect from './AssigneeSelect'
+import prisma from '@/prisma/client';
+import { notFound } from 'next/navigation';
+import React from 'react';
+import { Box, Flex, Grid } from '@radix-ui/themes';
+import EditButton from './EditButton';
+import IssueDetails from './IssueDetails';
+import IssueDeleteButton from './IssueDeleteButton';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/app/auth/authOptions';
+import AssigneeSelect from './AssigneeSelect';
 
 interface Props {
-    params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
-const IssueDetailPage = async ({params}: Props) => {
-    const session = await getServerSession(authOptions)
-    const { id } = await params
-    const issue = await prisma.issue.findUnique({
-        where: { id }
-    })
+const IssueDetailPage = async ({ params }: Props) => {
+  const session = await getServerSession(authOptions);
+  const { id } = await params;
+  const issue = await prisma.issue.findUnique({
+    where: { id },
+  });
 
-    if (!issue) {
-        notFound()
-    }
-    
+  if (!issue) {
+    notFound();
+  }
+
   return (
-    <Grid columns={{initial: '1', sm: '5'}}>
-    <Box className='md:col-span-4'>
+    <Grid columns={{ initial: '1', sm: '5' }}>
+      <Box className="md:col-span-4">
         <IssueDetails issue={issue} />
-    </Box>
+      </Box>
 
-    {session && <Box>
-        <Flex direction='column' gap='4'>
+      {session && (
+        <Box>
+          <Flex direction="column" gap="4">
             <AssigneeSelect />
             <EditButton issueId={issue.id} />
             <IssueDeleteButton issueId={issue.id} />
-        </Flex>
-    </Box>}
+          </Flex>
+        </Box>
+      )}
     </Grid>
-  )
-}
+  );
+};
 
-export default IssueDetailPage
+export default IssueDetailPage;

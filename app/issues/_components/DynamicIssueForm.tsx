@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import dynamic from 'next/dynamic'
-import IssueFormSkeleton from '../[id]/edit/loading'
-import { Issue } from '@prisma/client'
+import dynamic from 'next/dynamic';
+import IssueFormSkeleton from '../[id]/edit/loading';
+import { Issue } from '@prisma/client';
 
-const IssueForm = dynamic(() => import('./IssueForm'), { 
-  ssr: false, 
-  loading: () => <IssueFormSkeleton /> 
-})
+const IssueForm = dynamic(() => import('./IssueForm'), {
+  ssr: false,
+  loading: () => <IssueFormSkeleton />,
+});
 
 interface Props {
-  issue?: Issue
+  issue?: Issue;
 }
 
 const DynamicIssueForm = ({ issue }: Props) => {
-  return <IssueForm issue={issue} />
-}
+  return <IssueForm issue={issue} />;
+};
 
-export default DynamicIssueForm
+export default DynamicIssueForm;
