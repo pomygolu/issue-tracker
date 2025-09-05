@@ -2,7 +2,7 @@ import IssueStatusBadge from '@/app/components/IssueStatusBadge'
 import { Card, Flex, Heading } from '@radix-ui/themes'
 import { Issue } from '@prisma/client'
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
+import Markdown from 'markdown-to-jsx'
 
 const IssueDetails = ({issue} : {issue: Issue}) => {
   return (
@@ -15,7 +15,7 @@ const IssueDetails = ({issue} : {issue: Issue}) => {
     </Flex>
 
     <Card className='prose' mt='4'>
-        <ReactMarkdown>{issue.description || 'No description'}</ReactMarkdown>
+        <Markdown>{issue.description || 'No description'}</Markdown>
     </Card>
     </>
   )

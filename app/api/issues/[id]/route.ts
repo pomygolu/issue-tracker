@@ -2,15 +2,16 @@ import { IssueSchema } from "@/app/createIssueSchema"
 import prisma from "@/prisma/client"
 import { NextRequest, NextResponse } from "next/server"
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const body = await request.json()
     const validation = IssueSchema.safeParse(body)
     if (!validation.success) {
         return NextResponse.json({ error: validation.error.message }, { status: 400 })
     }
 
+    const { id } = await params
     const issue = await prisma.issue.findUnique({
-        where: { id: params.id }
+        where: { id }
     })
 
     if (!issue) {
@@ -18,7 +19,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 
     const updatedIssue = await prisma.issue.update({
-        where: { id: params.id },
+        where: { id },
         data: { title: validation.data.title, description: validation.data.description }
     })
 
