@@ -7,14 +7,15 @@ import IssueStatusBadge from '../components/IssueStatusBadge';
 import IssueAction from './IssueAction';
 import { Issue, Status } from '@prisma/client';
 import { ArrowUpIcon } from '@radix-ui/react-icons';
+import Pagination from '../components/Pagination';
 
 interface Props {
-  searchParams: Promise<{ status: Status; orderBy: keyof Issue }>;
+  searchParams: Promise<{ status: Status; orderBy: keyof Issue; page: string }>;
 }
 
 const IssuesPage = async ({ searchParams }: Props) => {
   const searchParamsObject = await searchParams;
-  const { status } = await searchParams;
+  const { status, page } = await searchParams;
   const statuses = Object.values(Status);
   let statusFilter: Status | undefined = status;
   if (status && !statuses.includes(status)) {
@@ -27,6 +28,15 @@ const IssuesPage = async ({ searchParams }: Props) => {
     { label: 'Created', value: 'createdAt', className: 'hidden md:table-cell' },
   ];
 
+  const currentPage = parseInt(page) || 1;
+  const pageSize = 10;
+  const skip = (currentPage - 1) * pageSize;
+  const totalCount = await prisma.issue.count({
+    where: {
+      status: statusFilter,
+    },
+  });
+
   const orderBy = columns
     .map(column => column.value)
     .includes(searchParamsObject.orderBy)
@@ -38,6 +48,8 @@ const IssuesPage = async ({ searchParams }: Props) => {
       status: statusFilter,
     },
     orderBy,
+    skip: skip,
+    take: pageSize,
   });
 
   return (
@@ -84,6 +96,11 @@ const IssuesPage = async ({ searchParams }: Props) => {
           ))}
         </Table.Body>
       </Table.Root>
+      <Pagination
+        currentPage={currentPage}
+        pageSize={pageSize}
+        itemCount={totalCount}
+      />
     </div>
   );
 };
