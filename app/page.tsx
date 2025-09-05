@@ -1,9 +1,15 @@
 import Image from 'next/image';
+import Pagination from './components/Pagination';
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ page: string }>;
+}) {
+  const { page } = await searchParams;
   return (
     <div>
-      <h1 className="text-gray-500">Hello World</h1>
+      <Pagination currentPage={parseInt(page)} pageSize={10} itemCount={100} />
     </div>
   );
 }
