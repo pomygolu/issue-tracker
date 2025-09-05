@@ -1,13 +1,14 @@
 'use client';
-import { User } from '@prisma/client';
+import { Issue, User } from '@prisma/client';
 import { Select } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import toast, { Toaster } from 'react-hot-toast';
 
-const AssigneeSelect = () => {
+const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const {
     data: users,
     isLoading,
@@ -34,19 +35,34 @@ const AssigneeSelect = () => {
   // }, [])
 
   return (
-    <Select.Root>
-      <Select.Trigger placeholder="Select an assignee" />
-      <Select.Content>
-        <Select.Group>
-          <Select.Label>Suggestions</Select.Label>
-          {users?.map(user => (
-            <Select.Item key={user.id} value={user.id}>
-              {user.name}
-            </Select.Item>
-          ))}
-        </Select.Group>
-      </Select.Content>
-    </Select.Root>
+    <>
+      <Select.Root
+        defaultValue={issue.assignedToUserId || 'none'}
+        onValueChange={userId => {
+          axios
+            .patch(`/api/issues/${issue.id}`, {
+              assignedToUserId: userId === 'none' ? null : userId,
+            })
+            .catch(error => {
+              toast.error('Failed to update assignee');
+            });
+        }}
+      >
+        <Select.Trigger placeholder="Select an assignee" />
+        <Select.Content>
+          <Select.Group>
+            <Select.Label>Suggestions</Select.Label>
+            <Select.Item value="none">Unassigned</Select.Item>
+            {users?.map(user => (
+              <Select.Item key={user.id} value={user.id}>
+                {user.name}
+              </Select.Item>
+            ))}
+          </Select.Group>
+        </Select.Content>
+      </Select.Root>
+      <Toaster />
+    </>
   );
 };
 
