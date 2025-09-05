@@ -13,7 +13,7 @@ const NavBar = () => {
     const currentPath = usePathname()
   return (
       <nav className='flex items-center p-4 mx-5 space-x-6 h-15 border-b'>
-          <Link href='/' legacyBehavior><AiFillBug /></Link>
+          <Link href='/'><AiFillBug /></Link>
           <ul className='flex items-center space-x-6'>
               {links.map((link) => (
                   <Link
@@ -24,7 +24,7 @@ const NavBar = () => {
                           'text-gray-900': currentPath === link.href,
                           'hover:text-black transition-colors': true,
                       })}
-                      legacyBehavior>
+                      >
                       {link.label}
                   </Link>
               ))}

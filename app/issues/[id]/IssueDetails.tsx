@@ -14,7 +14,7 @@ const IssueDetails = ({issue} : {issue: Issue}) => {
         <p>{issue.createdAt.toLocaleDateString()}</p>
     </Flex>
 
-    <Card className='prose' mt='4'>
+    <Card className='prose max-w-full' mt='4'>
         <Markdown>{issue.description || 'No description'}</Markdown>
     </Card>
     </>
