@@ -25,3 +25,20 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     return NextResponse.json(updatedIssue)
 }
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = (await params)
+    const issue = await prisma.issue.findUnique({
+        where: { id }
+    })
+
+    if (!issue) {
+        return NextResponse.json({ error: 'Issue not found' }, { status: 404 })
+    }
+
+    const updatedIssue = await prisma.issue.delete({
+        where: { id },
+    })
+
+    return NextResponse.json({})
+}
