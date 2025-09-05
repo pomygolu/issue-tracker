@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation'
 import classnames from 'classnames'
 import {useSession} from 'next-auth/react'
 import { Avatar, Box, DropdownMenu, Flex, Text } from '@radix-ui/themes';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const NavBar = () => {
@@ -50,21 +52,21 @@ const NavLinks = () => {
 
 const AuthStatus = () => {
     const {status, data: session} = useSession()
+    if (status === "loading") return <Skeleton width="2rem" />
+    if (status === "unauthenticated") return <Link className='nav-link' href="/api/auth/signin">Sign In</Link>
     return (
-        <Box>
-        {status === "authenticated" && 
-        <DropdownMenu.Root>
-            <DropdownMenu.Trigger>
-                <Avatar src={session?.user?.image!} fallback='?' size='2' radius='full' className='cursor-pointer' referrerPolicy='no-referrer' />
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content>
-                <DropdownMenu.Label><Text size='2'>{session?.user?.email}</Text></DropdownMenu.Label>
-                <DropdownMenu.Item>
-                    <Link href="/api/auth/signout">Sign Out</Link>
-                </DropdownMenu.Item>
-            </DropdownMenu.Content>
-        </DropdownMenu.Root>}
-        {status === "unauthenticated" && <Link className='nav-link' href="/api/auth/signin">Sign In</Link>}
+        <Box>   
+            <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                    <Avatar src={session?.user?.image!} fallback='?' size='2' radius='full' className='cursor-pointer' referrerPolicy='no-referrer' />
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content>
+                    <DropdownMenu.Label><Text size='2'>{session?.user?.email}</Text></DropdownMenu.Label>
+                    <DropdownMenu.Item>
+                        <Link href="/api/auth/signout">Sign Out</Link>
+                    </DropdownMenu.Item>
+                </DropdownMenu.Content>
+            </DropdownMenu.Root>
       </Box>
     )
 }
