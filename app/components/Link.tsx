@@ -1,7 +1,6 @@
 import React from 'react'
 import NextLink from 'next/link'
 import {Link as RadixLink} from '@radix-ui/themes'
-import { StringMappingType } from 'typescript'
 
 interface Props {
     href: string
@@ -10,10 +9,9 @@ interface Props {
 
 const Link = ({href, children}: Props) => {
   return (
-
-    <NextLink href={href} passHref legacyBehavior>
-        <RadixLink>{children}</RadixLink>
-    </NextLink>
+    <RadixLink asChild>
+        <NextLink href={href}>{children}</NextLink>
+    </RadixLink>
   )
 }
 
